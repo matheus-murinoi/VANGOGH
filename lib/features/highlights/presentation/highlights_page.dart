@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/media/media_asset.dart';
+import '../../../core/media/media_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/duration_x.dart';
+import '../../../shared/widgets/source_card.dart';
 import '../../../shared/widgets/ui_kit.dart';
 import '../../library/application/library_controller.dart';
 import '../application/highlights_controller.dart';

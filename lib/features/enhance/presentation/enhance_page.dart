@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../core/media/media_asset.dart';
+import '../../../core/media/media_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/ui_kit.dart';
-import '../../highlights/application/highlights_controller.dart';
 import '../../library/application/library_controller.dart';
 import '../application/enhance_controller.dart';
 import '../domain/entities/enhance_job.dart';
@@ -92,6 +95,16 @@ class EnhancePage extends ConsumerWidget {
               onAdd: () => _pick(context, ref, options.kind),
               onRemove: controller.removeSource,
             ),
+
+          if (state.hasSources) ...[
+            const SizedBox(height: 16),
+            _EnhancePreview(
+              source: state.sources.first,
+              result: state.status == EnhanceStatus.done && state.results.isNotEmpty
+                  ? state.results.first
+                  : null,
+            ),
+          ],
 
           const SizedBox(height: 8),
           PresetSelector(
@@ -232,6 +245,193 @@ class EnhancePage extends ConsumerWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _EnhancePreview extends StatefulWidget {
+  const _EnhancePreview({required this.source, this.result});
+
+  final MediaAsset source;
+  final MediaAsset? result;
+
+  @override
+  State<_EnhancePreview> createState() => _EnhancePreviewState();
+}
+
+class _EnhancePreviewState extends State<_EnhancePreview> {
+  VideoPlayerController? _videoController;
+  bool _showResult = false;
+  String? _loadedPath;
+
+  MediaAsset get _activeAsset =>
+      _showResult && widget.result != null ? widget.result! : widget.source;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVideoIfNeeded();
+  }
+
+  @override
+  void didUpdateWidget(covariant _EnhancePreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.source.path != widget.source.path ||
+        oldWidget.result?.path != widget.result?.path) {
+      _showResult = false;
+      _loadVideoIfNeeded();
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadVideoIfNeeded() async {
+    final asset = _activeAsset;
+    final path = asset.isVideo ? asset.path : null;
+    if (_loadedPath == path) return;
+
+    final previous = _videoController;
+    _videoController = null;
+    _loadedPath = path;
+    await previous?.dispose();
+
+    if (path == null) {
+      if (mounted) setState(() {});
+      return;
+    }
+
+    final next = VideoPlayerController.file(File(path));
+    _videoController = next;
+    try {
+      await next.initialize();
+      if (mounted && identical(_videoController, next)) setState(() {});
+    } catch (_) {
+      if (mounted && identical(_videoController, next)) setState(() {});
+    }
+  }
+
+  void _selectResult(bool value) {
+    if (_showResult == value) return;
+    setState(() => _showResult = value);
+    _loadVideoIfNeeded();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final asset = _activeAsset;
+    final video = _videoController;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text('Prévia', style: Theme.of(context).textTheme.titleMedium),
+            const Spacer(),
+            if (widget.result != null)
+              SegmentedButton<bool>(
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(value: false, label: Text('Original')),
+                  ButtonSegment(value: true, label: Text('Resultado')),
+                ],
+                selected: {_showResult},
+                onSelectionChanged: (selection) =>
+                    _selectResult(selection.first),
+              )
+            else
+              const PillLabel(text: 'Original', color: AppColors.textMuted),
+          ],
+        ),
+        const SizedBox(height: 10),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: AspectRatio(
+            aspectRatio: 16 / 10,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(color: AppColors.surfaceHigh),
+                if (asset.isVideo && video?.value.isInitialized == true)
+                  VideoPlayer(video!)
+                else if (!asset.isVideo)
+                  Image.file(
+                    File(asset.path),
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => const _PreviewFallback(),
+                  )
+                else
+                  const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                Positioned(
+                  left: 12,
+                  right: 12,
+                  bottom: 12,
+                  child: Row(
+                    children: [
+                      if (asset.isVideo && video?.value.isInitialized == true)
+                        IconButton.filledTonal(
+                          tooltip: video!.value.isPlaying ? 'Pausar' : 'Reproduzir',
+                          onPressed: () => video.value.isPlaying
+                              ? video.pause()
+                              : video.play(),
+                          icon: Icon(
+                            video.value.isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                          ),
+                        ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.62),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '${asset.name} · ${asset.resolutionLabel}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PreviewFallback extends StatelessWidget {
+  const _PreviewFallback();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Icon(
+        Icons.image_not_supported_outlined,
+        color: AppColors.textMuted,
+        size: 36,
       ),
     );
   }

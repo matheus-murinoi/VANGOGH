@@ -6,6 +6,7 @@ import '../features/enhance/presentation/enhance_page.dart';
 import '../features/highlights/presentation/highlights_page.dart';
 import '../features/home/presentation/home_page.dart';
 import '../features/library/presentation/library_page.dart';
+import '../features/trim/presentation/trim_page.dart';
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -25,7 +26,12 @@ class _AppShellState extends ConsumerState<AppShell> {
       body: IndexedStack(
         index: _index,
         children: [
-          HomePage(onGoHighlights: () => _go(1), onGoEnhance: () => _go(2)),
+          HomePage(
+            onGoTrim: () => _go(1),
+            onGoHighlights: () => _go(2),
+            onGoEnhance: () => _go(3),
+          ),
+          const TrimPage(),
           const HighlightsPage(),
           const EnhancePage(),
           const LibraryPage(),
@@ -59,6 +65,11 @@ class _AppShellState extends ConsumerState<AppShell> {
                 icon: Icon(Icons.home_outlined),
                 selectedIcon: Icon(Icons.home_rounded),
                 label: 'Início',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.content_cut_outlined),
+                selectedIcon: Icon(Icons.content_cut_rounded),
+                label: 'Cortar',
               ),
               NavigationDestination(
                 icon: Icon(Icons.auto_awesome_outlined),

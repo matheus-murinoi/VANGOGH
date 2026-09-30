@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "br.com.aprimorarvideo.aprimorar_video"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
