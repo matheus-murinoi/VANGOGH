@@ -11,5 +11,6 @@
     "github.codespaces.devcontainerChangedNotificationStyle": "modal",
     "githubPullRequests.ignoredPullRequestBranches": [
         "main"
-    ]
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
 }
