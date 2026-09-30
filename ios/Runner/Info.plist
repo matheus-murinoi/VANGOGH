@@ -68,14 +68,21 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Escolher videos e imagens para editar e melhorar a qualidade.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Salvar os videos e imagens editados na sua galeria.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Gravar vídeos para editar e melhorar a qualidade.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Gravar áudio junto do vídeo durante a edição.</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>audio</string>
+		<!-- `processing` (e nao `audio`) porque o app precisa continuar
+		     exportando quando o usuario trava a tela ou minimiza. O modo `audio`
+		     so justifica um app que so reproduz audio. -->
+		<string>processing</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>

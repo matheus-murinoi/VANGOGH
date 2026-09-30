@@ -4,10 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../library/application/library_controller.dart';
 import '../../../shared/widgets/ui_kit.dart';
+import 'profile_page.dart';
 
 class HomePage extends ConsumerWidget {
-  const HomePage({super.key, required this.onGoHighlights, required this.onGoEnhance});
+  const HomePage({
+    super.key,
+    required this.onGoTrim,
+    required this.onGoHighlights,
+    required this.onGoEnhance,
+  });
 
+  final VoidCallback onGoTrim;
   final VoidCallback onGoHighlights;
   final VoidCallback onGoEnhance;
 
@@ -48,6 +55,16 @@ class HomePage extends ConsumerWidget {
                     ),
                   ],
                 ),
+                const Spacer(),
+                IconButton(
+                  tooltip: 'Perfil e plano',
+                  onPressed: () => Navigator.of(context).push<void>(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ProfilePage(),
+                    ),
+                  ),
+                  icon: const Icon(Icons.account_circle_outlined),
+                ),
               ],
             ),
 
@@ -64,6 +81,21 @@ class HomePage extends ConsumerWidget {
             ),
 
             const SizedBox(height: 28),
+            _FeatureCard(
+              title: 'Cortar vídeo',
+              description:
+                  'Arraste as bordas na timeline, divida em vários trechos e '
+                  'junte tudo em um vídeo só, com a qualidade original.',
+              icon: Icons.content_cut_rounded,
+              gradient: AppColors.brand,
+              bullets: const [
+                'Corte preciso em cada trecho',
+                'Undo e redo sem medo',
+                'Exporta em 9:16, 1:1, 16:9 ou original',
+              ],
+              onTap: onGoTrim,
+            ),
+            const SizedBox(height: 14),
             _FeatureCard(
               title: 'Cortar melhores momentos',
               description:

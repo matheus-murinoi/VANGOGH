@@ -1,8 +1,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Leitura de mídia. Android 13+ usa as permissões granulares; até o
+         Android 12 a leitura segue em READ_EXTERNAL_STORAGE. O seletor de
+         arquivos do sistema (file_picker) funciona sem permissão nenhuma, mas
+         a galeria do app precisa destas para listar e salvar vídeos. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- Gravação no álbum. A partir do Android 10 o app escreve via
+         MediaStore e não precisa desta permissão. -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <!-- Gravação de vídeo pela câmera. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+
     <application
         android:label="aprimorar_video"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -25,6 +53,20 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Compartilhar e salvar o render precisa expor o arquivo do cache do
+             app por um FileProvider: o caminho do arquivo temporário não pode
+             vazar para fora do app. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
