@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Caminhos que o FileProvider pode expor: o diretório de cache do app, onde
+     os renders são escritos antes de irem para o álbum. -->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path
+        name="renders"
+        path="aprimorar_video/" />
+    <cache-path
+        name="cache_raiz"
+        path="." />
+    <external-cache-path
+        name="renders_externo"
+        path="." />
+    <files-path
+        name="internos"
+        path="." />
+</paths>
