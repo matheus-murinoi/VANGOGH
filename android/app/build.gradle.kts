@@ -5,7 +5,11 @@ plugins {
 }
 
 android {
+<<<<<<< HEAD
     namespace = "br.com.aprimorarvideo.aprimorar_video"
+=======
+    namespace = "com.murinoi.vangogh"
+>>>>>>> origin/main
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
