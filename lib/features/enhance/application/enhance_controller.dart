@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/engine/engine_providers.dart';
 import '../../../core/media/media_asset.dart';
-<<<<<<< HEAD
-import '../data/mock_enhance_repository.dart';
-=======
+import '../../../core/media/media_providers.dart';
 import '../data/ffmpeg_enhance_repository.dart';
->>>>>>> origin/main
 import '../domain/entities/enhance_job.dart';
 import '../domain/entities/enhance_options.dart';
 import '../domain/repositories/enhance_repository.dart';
@@ -69,14 +67,10 @@ class EnhanceState {
 }
 
 final enhanceRepositoryProvider = Provider<EnhanceRepository>(
-<<<<<<< HEAD
-  (ref) => MockEnhanceRepository(),
-=======
   (ref) => FfmpegEnhanceRepository(
     engine: ref.watch(renderEngineProvider),
     probe: ref.watch(mediaProbeProvider),
   ),
->>>>>>> origin/main
 );
 
 final enhanceControllerProvider =

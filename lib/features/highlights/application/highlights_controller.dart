@@ -2,26 +2,20 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/engine/engine_providers.dart';
 import '../../../core/media/media_asset.dart';
-<<<<<<< HEAD
-import '../data/mock_highlight_repository.dart';
-=======
+import '../../../core/media/media_providers.dart';
 import '../data/ffmpeg_highlight_repository.dart';
->>>>>>> origin/main
 import '../domain/entities/analysis.dart';
 import '../domain/entities/target_duration.dart';
 import '../domain/repositories/highlight_repository.dart';
 import 'highlights_state.dart';
 
 final highlightRepositoryProvider = Provider<HighlightRepository>(
-<<<<<<< HEAD
-  (ref) => MockHighlightRepository(),
-=======
   (ref) => FfmpegHighlightRepository(
     engine: ref.watch(renderEngineProvider),
     probe: ref.watch(mediaProbeProvider),
   ),
->>>>>>> origin/main
 );
 
 final highlightsControllerProvider =
