@@ -51,10 +51,8 @@ class FfmpegEnhanceRepository implements EnhanceRepository {
         outputPath: outputPath,
         ranges: [MediaRange(Duration.zero, source.duration ?? const Duration(seconds: 1))],
         settings: RenderSettings(
-          format: RenderFormat(
-            width: options.preset.width,
-            height: options.preset.height,
-          ),
+          customWidth: options.preset.width,
+          customHeight: options.preset.height,
           fps: options.targetFps,
           quality: RenderQuality.equilibrado,
           keepAudio: options.normalizeAudio,

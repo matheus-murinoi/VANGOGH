@@ -107,7 +107,8 @@ class FfmpegHighlightRepository implements HighlightRepository {
         outputPath: outputPath,
         ranges: plan.moments.map((m) => MediaRange(m.start, m.end)).toList(),
         settings: RenderSettings(
-          format: RenderFormat(width: settings.width, height: settings.height),
+          customWidth: settings.width,
+          customHeight: settings.height,
           fps: settings.fps,
           quality: RenderQuality.equilibrado,
           keepAudio: true,

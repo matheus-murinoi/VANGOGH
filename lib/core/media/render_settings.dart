@@ -36,12 +36,26 @@ enum OutputFormat {
 class RenderSettings {
   const RenderSettings({
     this.format = OutputFormat.original,
+    this.customWidth,
+    this.customHeight,
     this.fps,
     this.quality = RenderQuality.equilibrado,
     this.keepAudio = true,
-  });
+  }) : assert(
+         (customWidth == null) == (customHeight == null),
+         'customWidth e customHeight devem ser informados juntos',
+       );
 
+  /// Preset de proporção. Ignorado quando [customWidth]/[customHeight] estão
+  /// definidos — as features que trabalham com dimensões exatas (enhance,
+  /// highlights) usam o par customizado em vez de um preset fixo.
   final OutputFormat format;
+
+  /// Dimensões de saída em pixels, quando a feature precisa de um tamanho que
+  /// não é nenhum dos presets de [OutputFormat]. Nulos mantêm o comportamento
+  /// do preset.
+  final int? customWidth;
+  final int? customHeight;
   final int? fps;
   final RenderQuality quality;
   final bool keepAudio;
@@ -49,25 +63,38 @@ class RenderSettings {
   static const defaults = RenderSettings();
   static const fpsOptions = [24, 30, 60];
 
+  /// Largura efetiva de saída: a customizada, se houver, senão a do preset.
+  int? get width => customWidth ?? format.width;
+
+  /// Altura efetiva de saída: a customizada, se houver, senão a do preset.
+  int? get height => customHeight ?? format.height;
+
+  bool get keepsOriginalSize => width == null || height == null;
+
   int get crf => quality.crf;
 
   bool get matchesSource =>
-      format.keepsOriginalSize && fps == null;
+      keepsOriginalSize && fps == null;
 
   String get label => [
-    format.ratio,
+    customWidth != null ? '${customWidth}x$customHeight' : format.ratio,
     fps == null ? 'fps original' : '${fps}fps',
     quality.label,
   ].join(' · ');
 
   RenderSettings copyWith({
     OutputFormat? format,
+    int? customWidth,
+    int? customHeight,
     int? fps,
     RenderQuality? quality,
     bool? keepAudio,
+    bool clearCustomSize = false,
     bool clearFps = false,
   }) => RenderSettings(
     format: format ?? this.format,
+    customWidth: clearCustomSize ? null : (customWidth ?? this.customWidth),
+    customHeight: clearCustomSize ? null : (customHeight ?? this.customHeight),
     fps: clearFps ? null : (fps ?? this.fps),
     quality: quality ?? this.quality,
     keepAudio: keepAudio ?? this.keepAudio,
@@ -78,10 +105,13 @@ class RenderSettings {
       identical(this, other) ||
       other is RenderSettings &&
           other.format == format &&
+          other.customWidth == customWidth &&
+          other.customHeight == customHeight &&
           other.fps == fps &&
           other.quality == quality &&
           other.keepAudio == keepAudio;
 
   @override
-  int get hashCode => Object.hash(format, fps, quality, keepAudio);
+  int get hashCode =>
+      Object.hash(format, customWidth, customHeight, fps, quality, keepAudio);
 }

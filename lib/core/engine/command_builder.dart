@@ -64,8 +64,8 @@ abstract final class FfmpegCommand {
 
     final audioOut = settings.keepAudio && sourceHasAudio;
     final videoChain = <String>[
-      if (settings.format.width != null && settings.format.height != null)
-        ..._fitToBox(settings.format.width!, settings.format.height!),
+      if (settings.width != null && settings.height != null)
+        ..._fitToBox(settings.width!, settings.height!),
       if (settings.fps != null) 'fps=${settings.fps}',
     ];
     final audioChain = <String>[
@@ -83,8 +83,8 @@ abstract final class FfmpegCommand {
       else ..._complexFilters(valid, videoChain, audioChain, withAudio: audioOut),
       ..._encodeVideo(
         codec: codec,
-        width: settings.format.width,
-        height: settings.format.height,
+        width: settings.width,
+        height: settings.height,
         fps: settings.fps,
         quality: settings.quality,
       ),

@@ -106,8 +106,8 @@ class FfmpegTrimRepository implements TrimRepository {
         kind: MediaKind.video,
         sizeBytes: file.lengthSync(),
         duration: _lastPlan?.totalLength,
-        width: settings.format.width,
-        height: settings.format.height,
+        width: settings.width,
+        height: settings.height,
         fps: settings.fps?.toDouble(),
       ),
     );
