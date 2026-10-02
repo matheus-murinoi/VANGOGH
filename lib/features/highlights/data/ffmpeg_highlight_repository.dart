@@ -107,11 +107,14 @@ class FfmpegHighlightRepository implements HighlightRepository {
         outputPath: outputPath,
         ranges: plan.moments.map((m) => MediaRange(m.start, m.end)).toList(),
         settings: RenderSettings(
-          format: RenderFormat(width: settings.width, height: settings.height),
+          width: settings.width,
+          height: settings.height,
           fps: settings.fps,
-          quality: RenderQuality.equilibrado,
+          quality: _qualityForCrf(settings.crf),
           keepAudio: true,
         ),
+        codec: settings.hardwareAccelerated ? HwCodec.mediaCodec : HwCodec.software,
+        normalizeAudio: false,
       ),
       outputPath: outputPath,
       expectedDurationMs: plan.totalLength.inMilliseconds,
@@ -124,6 +127,12 @@ class FfmpegHighlightRepository implements HighlightRepository {
     }
 
     _lastOutputPath = outputPath;
+  }
+
+  RenderQuality _qualityForCrf(int crf) {
+    if (crf >= 26) return RenderQuality.leve;
+    if (crf >= 21) return RenderQuality.equilibrado;
+    return RenderQuality.maxima;
   }
 
   @override

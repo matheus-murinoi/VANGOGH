@@ -36,12 +36,16 @@ enum OutputFormat {
 class RenderSettings {
   const RenderSettings({
     this.format = OutputFormat.original,
+    this.width,
+    this.height,
     this.fps,
     this.quality = RenderQuality.equilibrado,
     this.keepAudio = true,
   });
 
   final OutputFormat format;
+  final int? width;
+  final int? height;
   final int? fps;
   final RenderQuality quality;
   final bool keepAudio;
@@ -62,12 +66,16 @@ class RenderSettings {
 
   RenderSettings copyWith({
     OutputFormat? format,
+    int? width,
+    int? height,
     int? fps,
     RenderQuality? quality,
     bool? keepAudio,
     bool clearFps = false,
   }) => RenderSettings(
     format: format ?? this.format,
+    width: width ?? this.width,
+    height: height ?? this.height,
     fps: clearFps ? null : (fps ?? this.fps),
     quality: quality ?? this.quality,
     keepAudio: keepAudio ?? this.keepAudio,
@@ -78,10 +86,12 @@ class RenderSettings {
       identical(this, other) ||
       other is RenderSettings &&
           other.format == format &&
+          other.width == width &&
+          other.height == height &&
           other.fps == fps &&
           other.quality == quality &&
           other.keepAudio == keepAudio;
 
   @override
-  int get hashCode => Object.hash(format, fps, quality, keepAudio);
+  int get hashCode => Object.hash(format, width, height, fps, quality, keepAudio);
 }

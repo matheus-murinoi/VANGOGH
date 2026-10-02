@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/engine/engine_providers.dart';
 import '../../../core/media/media_asset.dart';
+import '../../../core/media/media_providers.dart';
 import '../data/ffmpeg_highlight_repository.dart';
 import '../domain/entities/analysis.dart';
 import '../domain/entities/target_duration.dart';
