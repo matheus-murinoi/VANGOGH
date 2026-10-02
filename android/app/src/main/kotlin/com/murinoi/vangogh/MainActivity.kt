@@ -1,4 +1,4 @@
-package br.com.aprimorarvideo.aprimorar_video
+package com.murinoi.vangogh
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -13,11 +13,29 @@ Future<void> _scrollTo(WidgetTester tester, Finder target) async {
   );
 }
 
+Future<void> _skipLaunch(WidgetTester tester) async {
+  await tester.tap(find.text('Pular'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
+  testWidgets('mostra abertura cinematica e permite pular', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: AprimorarVideoApp()),
+    );
+
+    expect(find.text('Sua história. Em alta definição.'), findsOneWidget);
+    expect(find.text('ATÉ 4K'), findsOneWidget);
+
+    await _skipLaunch(tester);
+    expect(find.text('Cortar vídeo'), findsOneWidget);
+  });
+
   testWidgets('abre na tela inicial', (tester) async {
     await tester.pumpWidget(
       const ProviderScope(child: AprimorarVideoApp()),
     );
+    await _skipLaunch(tester);
 
     expect(find.text('Aprimorar Vídeo'), findsOneWidget);
     expect(find.text('Cortar vídeo'), findsOneWidget);
@@ -31,6 +49,7 @@ void main() {
     await tester.pumpWidget(
       const ProviderScope(child: AprimorarVideoApp()),
     );
+    await _skipLaunch(tester);
 
     await tester.tap(find.text('Cortar'));
     await tester.pumpAndSettle();

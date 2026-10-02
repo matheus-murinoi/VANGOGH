@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_theme.dart';
-import 'app_shell.dart';
+import 'launch_page.dart';
 
 class AprimorarVideoApp extends StatelessWidget {
   const AprimorarVideoApp({super.key});
@@ -13,7 +13,7 @@ class AprimorarVideoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       themeMode: ThemeMode.dark,
-      home: const AppShell(),
+      home: const LaunchPage(),
     );
   }
 }

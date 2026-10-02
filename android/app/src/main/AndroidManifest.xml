@@ -27,7 +27,7 @@
         android:required="false" />
 
     <application
-        android:label="aprimorar_video"
+        android:label="VanGogh"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
